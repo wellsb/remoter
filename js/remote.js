@@ -9,7 +9,7 @@ function notify(action, params) {
     unix = getdate();
     $.ajax({
         type: "POST",
-        url: "http://127.0.0.1/remoter/broker.php",
+        url: "http://localhost/remoter/broker.php",
         data: { txaction: action,
                 stamp: unix,
                 txparams: params

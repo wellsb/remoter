@@ -3,7 +3,7 @@ var count = 1;
 
 function getresp(){
     var resp = $.ajax({
-        url: "http://127.0.0.1/remoter/broker.php",
+        url: "http://localhost/remoter/broker.php",
         async: false
     }).responseText;
     var respsplit = resp.split(',');
@@ -28,22 +28,31 @@ function getQueryStrings(addr){
     return queryString;
 }
 
-function checkandchange(current){
+function checkandchange(current) {
     count++;
     var resp = getresp();
     console.log(current);
     console.log(resp);
+
     if (haschanged(resp[1], current)) {
         action = resp[0];
         $('#dialog').html("loading");
 
         if (action == 'open') {
-            //window.open(resp[2]);
-            window.open(resp[2]);
+            // Ensure the URL is absolute
+            let url = resp[2];
+            if (!/^https?:\/\//i.test(url)) { // If URL doesn't start with http:// or https://
+                url = 'http://' + url; // Prepend http://
+            }
+            window.open(url);
         }
-
     } else {
-        $('#dialog').html("count:" + count + "<br>action: " + resp[0] + "<br>stamp: " + resp[1] + "<br>params: " + resp[2]);
+        $('#dialog').html(
+            "count:" + count +
+            "<br>action: " + resp[0] +
+            "<br>stamp: " + resp[1] +
+            "<br>params: " + resp[2]
+        );
     }
 }
 
