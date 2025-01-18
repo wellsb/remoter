@@ -5,13 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d707ccd8-4f27-474f-b540-4cee78a842f8" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/favicon.ico" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/broker.php" beforeDir="false" afterPath="$PROJECT_DIR$/broker.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/current.log" beforeDir="false" afterPath="$PROJECT_DIR$/current.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/player.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/player.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/remote.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/remote.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/player.html" beforeDir="false" afterPath="$PROJECT_DIR$/player.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/remote.css" beforeDir="false" afterPath="$PROJECT_DIR$/remote.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/remote.html" beforeDir="false" afterPath="$PROJECT_DIR$/remote.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -71,7 +70,7 @@
       <updated>1737193582473</updated>
       <workItem from="1737193589264" duration="2213000" />
       <workItem from="1737207557474" duration="183000" />
-      <workItem from="1737207772681" duration="8401000" />
+      <workItem from="1737207772681" duration="14781000" />
     </task>
     <servers />
   </component>

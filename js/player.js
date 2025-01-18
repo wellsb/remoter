@@ -37,8 +37,9 @@ function getresp() {
         url: getURLAndFolderPath() + "broker.php",
         async: true // Default is true; explicitly defining for clarity
     }).then((response) => {
-        const respsplit = response.split(',');
-        return respsplit; // Resolves the Promise with the split array
+        //const respsplit = response.split(',');
+        //return respsplit; // Resolves the Promise with the split array
+        return response; // Resolves the Promise with the split array
     }).fail((error) => {
         console.error("Error fetching response:", error);
     });
@@ -103,81 +104,69 @@ function haschanged(got){
 }
 
 /**
- * Monitors changes to a server response and performs actions based on the differences.
+ * Checks for changes in the response data and performs appropriate actions.
  *
- * This function periodically calls the asynchronous `getresp()` function to fetch a response
- * from the server. If a specific value in the response differs from the given `current` value,
- * actions such as opening a window or updating a dialog are performed. The results are dynamically
- * displayed in the UI, and errors are logged for debugging.
+ * @param {*} current - The current value used to detect changes in the response 'stamp'.
  *
- * @param {any} current - The current reference value used to detect changes in the server response.
+ * Behavior:
+ * 1. Increments a global `count` variable to track the number of calls to this function.
+ * 2. Calls the asynchronous `getresp` function to fetch a response, which is then parsed as JSON.
+ * 3. Validates the JSON structure to ensure it contains the required fields: `action`, `stamp`, and `params`.
+ * 4. Compares the `stamp` value in the response with the `current` value using the `haschanged` function:
+ *    - If a change is detected:
+ *      - Updates the dialog to show "loading".
+ *      - If the action is `'open'`, ensures the `params` field contains a valid URL and opens it in a new tab.
+ *    - If no change is detected:
+ *      - Updates the dialog with the current `action`, `stamp`, and `params` values.
+ * 5. Handles errors:
+ *    - Logs an error if the JSON structure is invalid.
+ *    - Logs an error if the `getresp` function fails.
  *
- * @description
- * - **Behavior**:
- *   - Fetches an asynchronous response (`getresp()`).
- *   - Compares the second element of the response (`respsplit[1]`) with the `current` value using `haschanged()`.
- *   - If a change is detected:
- *     1. Prepares the necessary action string (`respsplit[0]`).
- *     2. Opens a new URL if the action is `"open"`.
- *     3. Ensures the URL is absolute by prepending `http://` if needed.
- *     4. Updates the dialog to show “loading” while processing.
- *   - Otherwise, updates the dialog with the count, action, timestamp (`stamp`), and additional parameters.
- * - **Error Handling**:
- *   - Logs any errors encountered during the `getresp()` call to the console for debugging.
- * - **Asynchronous Workflow**:
- *   - Uses `then()` to process the resolved response of the `getresp()` Promise.
- *   - If the `getresp()` call fails, the function handles the error via `.catch()`.
+ * Side Effects:
+ * - Updates the HTML content of the `#dialog` element dynamically.
+ * - Opens a URL in a new browser tab when the action is `'open'`.
  *
- * @returns {void} - This function does not return a value. Instead, it performs UI updates and executes side effects.
- *
- * @example
- * // Example of how a periodic check is set up:
- * window.setInterval(() => checkAndChange(currentValue), 5000);
- *
- * // Functionally, the server response may look like:
- * // ['open', '2023-01-01', 'example.com']
- * // Where:
- * // - 'open' is the action
- * // - '2023-01-01' is the timestamp
- * // - 'example.com' is the URL
- *
- * @see getresp - The asynchronous function that fetches the server response used in this function.
- * @see haschanged - Helper function that determines if the response value has changed from `current`.
- *
- * @note
- * - This function relies on proper resolution of the `Promise` returned by `getresp()` to function as expected.
- * - Ensure that jQuery is loaded in the project for DOM manipulations (e.g., `$('#dialog')`) to work.
- * - HTML updates are done in the element with ID `dialog`.
+ * Requirements:
+ * - A global `count` variable to track function calls.
+ * - A global `action` variable to store the current response action.
+ * - The functions `getresp` (asynchronous) and `haschanged` must be defined elsewhere in the codebase.
+ * - jQuery is required for DOM manipulation ($('#dialog').html(...)`) and handling dialog updates.
  */
 function checkAndChange(current) {
     count++;
 
     // Call getresp() and handle the asynchronous result
     getresp()
-        .then((respsplit) => {
-            //console.log(respsplit); // Log the response array
+        .then((response) => {
+            // Parse the JSON response
+            const resJson = JSON.parse(response);
 
-            // Check if the second element of the response array differs from the current value
-            if (haschanged(respsplit[1], current)) {
-                action = respsplit[0];
-                $('#dialog').html("loading");
+            // Validate the structure of the response JSON
+            if (resJson && resJson.action && resJson.stamp !== undefined && resJson.params) {
+                // Check if the stamp (or some other field, if needed) has changed
+                if (haschanged(resJson.stamp, current)) {
+                    action = resJson.action;
+                    $('#dialog').html("loading");
 
-                if (action === 'open') {
-                    // Ensure the URL is absolute
-                    let url = respsplit[2];
-                    if (!/^https?:\/\//i.test(url)) { // If URL doesn't start with http:// or https://
-                        url = 'http://' + url; // Prepend http://
+                    if (action === 'open') {
+                        // Ensure the URL in 'params' is absolute
+                        let url = resJson.params;
+                        if (!/^https?:\/\//i.test(url)) { // If URL doesn't start with http:// or https://
+                            url = 'http://' + url; // Prepend http://
+                        }
+                        window.open(url);
                     }
-                    window.open(url);
+                } else {
+                    // Update the dialog with the current action, stamp, and parameters
+                    $('#dialog').html(
+                        "count:" + count +
+                        "<br>action: " + resJson.action +
+                        "<br>stamp: " + resJson.stamp +
+                        "<br>params: " + resJson.params
+                    );
                 }
             } else {
-                // Update the dialog with the current action, stamp, and parameters
-                $('#dialog').html(
-                    "count:" + count +
-                    "<br>action: " + respsplit[0] +
-                    "<br>stamp: " + respsplit[1] +
-                    "<br>params: " + respsplit[2]
-                );
+                console.error("Invalid JSON structure received:", response);
             }
         })
         .fail((error) => {

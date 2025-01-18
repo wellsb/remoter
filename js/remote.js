@@ -6,25 +6,30 @@ function getdate() {
 }
 
 function notify(action, params) {
-    unix = getdate();
+    const unix = getdate(); // Ensure this provides the correct timestamp
+    const data = JSON.stringify({
+        action: action,
+        stamp: unix,
+        params: params
+    });
+    console.log(data);
+
     $.ajax({
         type: "POST",
         url: getURLAndFolderPath() + "broker.php",
-        data: { txaction: action,
-                stamp: unix,
-                txparams: params
-              },
+        contentType: "application/json", // Set the content type to JSON
+        data: data, // Send the JSON data
         success: function (response) {
-            // jQuery("#usergrid").trigger("reloadGrid");
-            // clear();
-            // alert("Details saved successfully!!!");
+            // Handle the server response here
+            console.log('Response:', response);
         },
         error: function (xhr, ajaxOptions, thrownError) {
-            console.log(xhr.status);
-            console.log(thrownError);
+            console.log('Error:', xhr.status);
+            console.log('Thrown Error:', thrownError);
         }
-    })
-    $('#dialog').html("action: " + action + "<br>stamp: " + unix + "<br>params: " + params);
+    });
+
+    $('#dialog').html("action: " + action + "<br>stamp: " + unix + "<br>params: " + JSON.stringify(params, null, 2));
 }
 
 function getURLAndFolderPath() {
@@ -38,8 +43,22 @@ function getURLAndFolderPath() {
     return `${fullDomain}${folderPath}/`;
 }
 
-$("#butsync").click(function(){
-    params = $("#url").val();
-    notify('open',params);
-    console.log("sync");
+$(document).ready(function () {
+    // Reusable function to trigger notify with the URL value
+    function triggerNotify() {
+        const params = $("#url").val();
+        notify('open', params);
+    }
+
+    // Notify on button click
+    $('#butsync').on('click', function () {
+        triggerNotify();
+    });
+
+    // Notify on Enter key press in the "url" textbox
+    $('#url').on('keydown', function (event) {
+        if (event.key === 'Enter') {
+            triggerNotify();
+        }
+    });
 });
