@@ -2,44 +2,40 @@ let current = 1;
 let count = 1;
 
 /**
- * Asynchronously fetches a response from the server, processes it, and returns the result as a Promise.
+ * Sends an asynchronous AJAX request to fetch a response from the server.
  *
- * This function performs an asynchronous AJAX request to a `broker.php` file located in the same folder as the current
- * page. The server response is expected to be a comma-separated string, which is split into an array of strings and returned.
- * If an error occurs during the request, it logs the error to the console.
+ * @returns {Promise<String|void>}
+ * - A promise resolving to the server's response as a string if the request is successful.
+ * - Logs an error and resolves as `undefined` if the request fails.
  *
- * @returns {Promise<string[]>} - A Promise that resolves to an array of strings obtained by splitting the server's response on commas.
+ * Behavior:
+ * - Sends a GET request to `broker.php` located at the path provided by `getURLAndFolderPath()`.
+ * - The request is asynchronous (`async: true`), ensuring non-blocking behavior.
+ * - On success, the server's response is returned through the resolved promise.
+ * - On failure, logs an error message (`"Error fetching response"`) and provides the error object.
  *
- * @example
- * // Assuming the server returns the response string "open,12345,example.com":
- * getresp().then((respsplit) => {
- *     console.log(respsplit);
- *     // Output: ['open', '12345', 'example.com']
- * });
- *
- * @description
- * - **Request**: Sends an asynchronous AJAX GET request via jQuery to the `broker.php` script.
- * - **Response Handling**:
- *   - The response text is split by commas (`,`) into an array of strings.
- *   - The resulting array is logged to the console and returned via a Promise.
- * - **Error Handling**:
- *   - If any error occurs (e.g., network issue or server failure), it logs the error to the console.
- *
- * @note
- * - This function uses jQuery for making the AJAX request. If jQuery is unavailable, the function will not work.
- * - The URL to the `broker.php` script is dynamically constructed using the `getURLAndFolderPath()` helper function.
- * - Asynchronous behavior ensures that the function does not block execution or freeze the UI while waiting for a response.
- *
- * @see getURLAndFolderPath - Helper function used to dynamically construct the URL for the AJAX request.
+ * Requirements:
+ * - jQuery is required for the `$.ajax` functionality.
+ * - The helper function `getURLAndFolderPath()` must return a valid base URL/path.
+ * - The server-side script `broker.php` must exist and be accessible on the provided URL.
  */
 function getresp() {
     return $.ajax({
         url: getURLAndFolderPath() + "broker.php",
         async: true // Default is true; explicitly defining for clarity
     }).then((response) => {
-        //const respsplit = response.split(',');
-        //return respsplit; // Resolves the Promise with the split array
-        return response; // Resolves the Promise with the split array
+        return response;
+    }).fail((error) => {
+        console.error("Error fetching response:", error);
+    });
+}
+
+function getresp() {
+    return $.ajax({
+        url: getURLAndFolderPath() + "broker.php",
+        async: true // Default is true; explicitly defining for clarity
+    }).then((response) => {
+        return response;
     }).fail((error) => {
         console.error("Error fetching response:", error);
     });
