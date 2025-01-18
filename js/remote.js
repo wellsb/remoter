@@ -38,18 +38,8 @@ function getURLAndFolderPath() {
     return `${fullDomain}${folderPath}/`;
 }
 
-// Example usage
-const result = getURLAndFolderPath();
-console.log("URL and Folder Path:", result);
-
-console.log(getURLAndFolderPath());
-
-
 $("#butsync").click(function(){
-    params = $("#taddr").val();
+    params = $("#url").val();
     notify('open',params);
+    console.log("sync");
 });
-
-$("#taddr").on("click", function() {
-    //$("#taddr").val("")
-})

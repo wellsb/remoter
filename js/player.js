@@ -38,17 +38,11 @@ function getresp() {
         async: true // Default is true; explicitly defining for clarity
     }).then((response) => {
         const respsplit = response.split(',');
-        //console.log(respsplit);
         return respsplit; // Resolves the Promise with the split array
-    }).catch((error) => {
+    }).fail((error) => {
         console.error("Error fetching response:", error);
     });
 }
-
-// Usage Example with Promises
-getresp().then((respsplit) => {
-    console.log(respsplit);
-});
 
 /**
  * Retrieves the full URL consisting of the domain and the folder path of the current page.
@@ -186,7 +180,7 @@ function checkAndChange(current) {
                 );
             }
         })
-        .catch((error) => {
+        .fail((error) => {
             console.error("Error in getresp():", error);
         });
 
