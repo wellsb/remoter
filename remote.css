@@ -51,6 +51,15 @@
     flex: 1; /* Take up all available space */
 }
 
+#url {
+    width: 100%; /* Full width of the container */
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
 #address input[type="text"] {
     width: 100%; /* Ensures the input stretches within the parent */
     height: 38px; /* Explicitly matches the button height */
@@ -59,4 +68,21 @@
     border: 1px solid #cccccc; /* Light gray border */
     border-radius: 5px; /* Match the button's rounded edges */
     box-sizing: border-box; /* Ensure border/padding are included in size */
+}
+
+#clear-url {
+    margin-top: 0px; /* Add spacing for the clear button */
+    font-size: 16px;
+    cursor: pointer;
+    color: #fff;
+    background-color: #f44336; /* Red button */
+    border: none;
+    padding: 0px 0px;
+    border-radius: 4px;
+}
+
+#textinput {
+    width: 100%;
+    position: relative;
+    display: inline-block;
 }

@@ -58,11 +58,26 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    const urlInputField = document.getElementById("url");
+    const clearButton = document.getElementById("clear-url");
+
+    if (clearButton) {
+        console.log("Clear button found!"); // Debugging check
+        clearButton.addEventListener("click", function () {
+            console.log("Clear button clicked"); // Verify this executes
+            if (urlInputField) {
+                urlInputField.value = ""; // Clear the text box
+                urlInputField.focus(); // Set focus back to the input
+            }
+        });
+    } else {
+        console.error("Clear button not found in DOM!");
+    }
+
     // Notify on Enter key press in the "url" textbox
-    const urlInput = document.getElementById("url"); // Get the "url" textbox
-    if (urlInput) {
-        urlInput.addEventListener("keydown", function (event) {
-            if (event.key === 'Enter') { // Check for the Enter key
+    if (urlInputField) {
+        urlInputField.addEventListener("keydown", function (event) {
+            if (event.key === 'Enter') {
                 triggerNotify();
             }
         });

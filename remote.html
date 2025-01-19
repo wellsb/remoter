@@ -14,7 +14,10 @@
             <div id="controller">
                 <div id="butsync">Open</div>
                 <div id="address">
-                    <input id="url" type="text" value="http://www.google.com" />
+                    <div id="textinput" style="position: relative; display: inline-block;">
+                        <input id="url" type="text" value="http://www.google.com" placeholder="Enter URL" />
+                        <span id="clear-url" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 16px;">&times;</span>
+                    </div>
                 </div>
             </div>
             <div id="dialog"></div>

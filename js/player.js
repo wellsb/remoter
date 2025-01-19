@@ -50,7 +50,7 @@ function checkAndChange(current) {
             if (resJson && resJson.action && resJson.stamp !== undefined && resJson.params) {
 
                 // Check if the stamp (or some other field) has changed
-                if (haschanged(resJson.stamp, current)) {
+                if (haschanged(resJson.stamp)) {
                     action = resJson.action;
                     updateElement('dialog', "loading");
 
