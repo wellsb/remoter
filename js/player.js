@@ -30,17 +30,6 @@ function getresp() {
     });
 }
 
-function getresp() {
-    return $.ajax({
-        url: getURLAndFolderPath() + "broker.php",
-        async: true // Default is true; explicitly defining for clarity
-    }).then((response) => {
-        return response;
-    }).fail((error) => {
-        console.error("Error fetching response:", error);
-    });
-}
-
 /**
  * Retrieves the full URL consisting of the domain and the folder path of the current page.
  *
@@ -154,11 +143,14 @@ function checkAndChange(current) {
                     }
                 } else {
                     // Update the dialog with the current action, stamp, and parameters
+                    const now = new Date(); // Get the current date and time
+                    const formattedDate = now.toLocaleString(); // Format to human-readable string (depends on user locale)
                     $('#dialog').html(
-                        "count:" + count +
-                        "<br>action: " + resJson.action +
-                        "<br>stamp: " + resJson.stamp +
-                        "<br>params: " + resJson.params
+                        "Count: " + count +
+                        "<br>Action: " + resJson.action +
+                        "<br>Stamp: " + resJson.stamp +
+                        "<br>Param: " + resJson.params +
+                        "<br>Last Update: " + formattedDate
                     );
                 }
             } else {
