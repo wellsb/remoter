@@ -1,12 +1,10 @@
-var addr;
-
 function getdate() {
     var unix = Math.round(+new Date()/1000);
     return unix;
 }
 
 function notify(action, params) {
-    const unix = getdate(); // Ensure this provides the correct timestamp
+    const unix = getdate();
     const data = JSON.stringify({
         action: action,
         stamp: unix,
@@ -29,18 +27,11 @@ function notify(action, params) {
         }
     });
 
-    $('#dialog').html("action: " + action + "<br>stamp: " + unix + "<br>params: " + JSON.stringify(params, null, 2));
-}
-
-function getURLAndFolderPath() {
-    // Full domain (protocol + hostname + port)
-    const fullDomain = window.location.origin;
-
-    // Folder path (removing the file name from the URL path)
-    const folderPath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
-
-    // Return as a single string: Domain + Folder Path
-    return `${fullDomain}${folderPath}/`;
+    content = //"" +
+        "action: " + action +
+        "<br>stamp: " + unix +
+        "<br>params: " + JSON.stringify(params, null, 2);
+    updateElement("dialog", content);
 }
 
 $(document).ready(function () {

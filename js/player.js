@@ -2,93 +2,6 @@ let current = 1;
 let count = 1;
 
 /**
- * Sends an asynchronous AJAX request to fetch a response from the server.
- *
- * @returns {Promise<String|void>}
- * - A promise resolving to the server's response as a string if the request is successful.
- * - Logs an error and resolves as `undefined` if the request fails.
- *
- * Behavior:
- * - Sends a GET request to `broker.php` located at the path provided by `getURLAndFolderPath()`.
- * - The request is asynchronous (`async: true`), ensuring non-blocking behavior.
- * - On success, the server's response is returned through the resolved promise.
- * - On failure, logs an error message (`"Error fetching response"`) and provides the error object.
- *
- * Requirements:
- * - jQuery is required for the `$.ajax` functionality.
- * - The helper function `getURLAndFolderPath()` must return a valid base URL/path.
- * - The server-side script `broker.php` must exist and be accessible on the provided URL.
- */
-function getresp() {
-    return $.ajax({
-        url: getURLAndFolderPath() + "broker.php",
-        async: true // Default is true; explicitly defining for clarity
-    }).then((response) => {
-        return response;
-    }).fail((error) => {
-        console.error("Error fetching response:", error);
-    });
-}
-
-/**
- * Retrieves the full URL consisting of the domain and the folder path of the current page.
- *
- * This function combines the protocol, hostname, and port (if any) from the browser's `window.location.origin`
- * with the folder path (excluding the current page or file name) derived from the `window.location.pathname`.
- * It constructs and returns the full URL path up to the folder, ensuring the result ends with a slash (`/`).
- *
- * @returns {string} - The full URL including the domain and folder path. The result always ends with a trailing slash.
- *
- * @example
- * // Assuming the current page URL is "https://example.com/folder/subfolder/index.html":
- * console.log(getURLAndFolderPath());
- * // Output: "https://example.com/folder/subfolder/"
- *
- * @example
- * // Assuming the current page URL is "http://localhost:8080/project/page.html":
- * console.log(getURLAndFolderPath());
- * // Output: "http://localhost:8080/project/"
- *
- * @note This function relies on the `window.location` object, which is only available in a browser environment.
- * It will not work in non-browser (e.g., Node.js) environments.
- */
-function getURLAndFolderPath() {
-    // Full domain (protocol + hostname + port)
-    const fullDomain = window.location.origin;
-
-    // Folder path (removing the file name from the URL path)
-    const folderPath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
-
-    // Return as a single string: Domain + Folder Path
-    return `${fullDomain}${folderPath}/`;
-}
-
-/**
- * Checks if the given value (`got`) is greater than the current value of the global `current` variable.
- * If so, updates the `current` variable with the value of `got` and returns `true`.
- * Otherwise, returns `false`.
- *
- * @param {number} got - The value to compare against the current value.
- * @returns {boolean} - Returns `true` if `got` is greater than `current`, otherwise `false`.
- *
- * @example
- * let current = 5; // Global variable
- * console.log(haschanged(10)); // Output: true (current becomes 10)
- * console.log(haschanged(8));  // Output: false (current remains 10)
- *
- * @note This function uses a global variable `current`, which needs to be defined before calling this function.
- *       Ensure `current` is correctly set for consistent behavior.
- */
-function haschanged(got){
-    if (got > current) {
-        current = got;
-        return true;
-    } else {
-        return false;
-    }
-}
-
-/**
  * Checks for changes in the response data and performs appropriate actions.
  *
  * @param {*} current - The current value used to detect changes in the response 'stamp'.
@@ -131,7 +44,7 @@ function checkAndChange(current) {
                 // Check if the stamp (or some other field, if needed) has changed
                 if (haschanged(resJson.stamp, current)) {
                     action = resJson.action;
-                    $('#dialog').html("loading");
+                    updateElement('dialog', "loading");
 
                     if (action === 'open') {
                         // Ensure the URL in 'params' is absolute
@@ -143,15 +56,14 @@ function checkAndChange(current) {
                     }
                 } else {
                     // Update the dialog with the current action, stamp, and parameters
-                    const now = new Date(); // Get the current date and time
-                    const formattedDate = now.toLocaleString(); // Format to human-readable string (depends on user locale)
-                    $('#dialog').html(
+                    content =
                         "Count: " + count +
                         "<br>Action: " + resJson.action +
                         "<br>Stamp: " + resJson.stamp +
                         "<br>Param: " + resJson.params +
-                        "<br>Last Update: " + formattedDate
-                    );
+                        "<br>Last Update: " + formatDate(new Date());
+
+                    updateElement('dialog', content);
                 }
             } else {
                 console.error("Invalid JSON structure received:", response);
@@ -162,6 +74,60 @@ function checkAndChange(current) {
         });
 
     //console.log(current); // Current value logged for debugging
+}
+
+/**
+ * Sends an asynchronous AJAX request to fetch a response from the server.
+ *
+ * @returns {Promise<String|void>}
+ * - A promise resolving to the server's response as a string if the request is successful.
+ * - Logs an error and resolves as `undefined` if the request fails.
+ *
+ * Behavior:
+ * - Sends a GET request to `broker.php` located at the path provided by `getURLAndFolderPath()`.
+ * - The request is asynchronous (`async: true`), ensuring non-blocking behavior.
+ * - On success, the server's response is returned through the resolved promise.
+ * - On failure, logs an error message (`"Error fetching response"`) and provides the error object.
+ *
+ * Requirements:
+ * - jQuery is required for the `$.ajax` functionality.
+ * - The helper function `getURLAndFolderPath()` must return a valid base URL/path.
+ * - The server-side script `broker.php` must exist and be accessible on the provided URL.
+ */
+function getresp() {
+    return $.ajax({
+        url: getURLAndFolderPath() + "broker.php",
+        async: true // Default is true; explicitly defining for clarity
+    }).then((response) => {
+        return response;
+    }).fail((error) => {
+        console.error("Error fetching response:", error);
+    });
+}
+
+/**
+ * Checks if the given value (`got`) is greater than the current value of the global `current` variable.
+ * If so, updates the `current` variable with the value of `got` and returns `true`.
+ * Otherwise, returns `false`.
+ *
+ * @param {number} got - The value to compare against the current value.
+ * @returns {boolean} - Returns `true` if `got` is greater than `current`, otherwise `false`.
+ *
+ * @example
+ * let current = 5; // Global variable
+ * console.log(haschanged(10)); // Output: true (current becomes 10)
+ * console.log(haschanged(8));  // Output: false (current remains 10)
+ *
+ * @note This function uses a global variable `current`, which needs to be defined before calling this function.
+ *       Ensure `current` is correctly set for consistent behavior.
+ */
+function haschanged(got){
+    if (got > current) {
+        current = got;
+        return true;
+    } else {
+        return false;
+    }
 }
 
 // Run the checkAndChange function every 5 seconds with the current value
