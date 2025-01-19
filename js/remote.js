@@ -52,34 +52,36 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Notify on button click
     const button = document.getElementById("butsync"); // Get the sync button
-    if (button) {
+    if (button)
+    {
         button.addEventListener("click", function () {
             triggerNotify();
         });
     }
 
     const urlInputField = document.getElementById("url");
-    const clearButton = document.getElementById("clear-url");
+    // Notify on Enter key press in the "url" textbox
+    if (urlInputField)
+    {
+        urlInputField.addEventListener("keydown", function (event) {
+            if (event.key === 'Enter') {
+                triggerNotify();
+            }
+        });
+    }
 
-    if (clearButton) {
-        console.log("Clear button found!"); // Debugging check
+    const clearButton = document.getElementById("clear-url");
+    if (clearButton)
+    {
         clearButton.addEventListener("click", function () {
             console.log("Clear button clicked"); // Verify this executes
-            if (urlInputField) {
+            if (urlInputField)
+            {
                 urlInputField.value = ""; // Clear the text box
                 urlInputField.focus(); // Set focus back to the input
             }
         });
     } else {
         console.error("Clear button not found in DOM!");
-    }
-
-    // Notify on Enter key press in the "url" textbox
-    if (urlInputField) {
-        urlInputField.addEventListener("keydown", function (event) {
-            if (event.key === 'Enter') {
-                triggerNotify();
-            }
-        });
     }
 });

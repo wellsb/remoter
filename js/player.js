@@ -47,14 +47,16 @@ function checkAndChange(current) {
             }
 
             // Validate the structure of the response JSON
-            if (resJson && resJson.action && resJson.stamp !== undefined && resJson.params) {
+            if (resJson && resJson.action && resJson.stamp !== undefined && resJson.params)
+            {
 
                 // Check if the stamp (or some other field) has changed
                 if (haschanged(resJson.stamp)) {
                     action = resJson.action;
                     updateElement('dialog', "loading");
 
-                    if (action === 'open') {
+                    if (action === 'open')
+                    {
                         // Ensure the URL in 'params' is absolute
                         let url = resJson.params;
                         if (!/^https?:\/\//i.test(url)) { // If URL doesn't start with http:// or https://

@@ -75,10 +75,14 @@
     font-size: 16px;
     cursor: pointer;
     color: #fff;
-    background-color: #f44336; /* Red button */
+    background-color: #717171;
     border: none;
-    padding: 0px 0px;
-    border-radius: 4px;
+    width: 20px; /* Ensure the button has equal width and height */
+    height: 20px;
+    padding: 0px; /* Remove extra padding for a perfect circle */
+    border-radius: 50%; /* Make the button round */
+    text-align: center; /* Ensure the content inside is centered */
+    line-height: 20px; /* Line height to vertically align text */
 }
 
 #textinput {
