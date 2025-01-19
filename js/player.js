@@ -36,12 +36,20 @@ function checkAndChange(current) {
     // Call getresp() and handle the asynchronous result
     getresp()
         .then((response) => {
+
             // Parse the JSON response
-            const resJson = JSON.parse(response);
+            let resJson;
+            try {
+                resJson = JSON.parse(response); // Safely parse JSON
+            } catch (error) {
+                console.error("Error parsing response JSON:", error);
+                return; // Exit the function on invalid JSON
+            }
 
             // Validate the structure of the response JSON
             if (resJson && resJson.action && resJson.stamp !== undefined && resJson.params) {
-                // Check if the stamp (or some other field, if needed) has changed
+
+                // Check if the stamp (or some other field) has changed
                 if (haschanged(resJson.stamp, current)) {
                     action = resJson.action;
                     updateElement('dialog', "loading");
@@ -55,25 +63,27 @@ function checkAndChange(current) {
                         window.open(url);
                     }
                 } else {
-                    // Update the dialog with the current action, stamp, and parameters
-                    content =
+                    // Format the current state as HTML content
+                    const content =
                         "Count: " + count +
                         "<br>Action: " + resJson.action +
                         "<br>Stamp: " + resJson.stamp +
                         "<br>Param: " + resJson.params +
                         "<br>Last Update: " + formatDate(new Date());
 
+                    // Update the dialog DOM element with content
                     updateElement('dialog', content);
                 }
             } else {
                 console.error("Invalid JSON structure received:", response);
             }
         })
-        .fail((error) => {
+        .catch((error) => {
+            // Handle errors from getresp() here
             console.error("Error in getresp():", error);
         });
 
-    //console.log(current); // Current value logged for debugging
+    //console.log(current); // Optional debugging
 }
 
 /**
@@ -95,14 +105,18 @@ function checkAndChange(current) {
  * - The server-side script `broker.php` must exist and be accessible on the provided URL.
  */
 function getresp() {
-    return $.ajax({
-        url: getURLAndFolderPath() + "broker.php",
-        async: true // Default is true; explicitly defining for clarity
-    }).then((response) => {
-        return response;
-    }).fail((error) => {
-        console.error("Error fetching response:", error);
-    });
+    const url = getURLAndFolderPath() + "broker.php";
+
+    return fetch(url, { method: 'GET' })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.text(); // Return the response as text
+        })
+        .catch((error) => {
+            console.error("Error fetching response:", error);
+        });
 }
 
 /**

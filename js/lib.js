@@ -47,5 +47,10 @@ function formatDate(date) {
 }
 
 function updateElement(targetElementId, content) {
-    $(`#${targetElementId}`).html(content);
+    const element = document.getElementById(targetElementId); // Get the element by its ID
+    if (element) {
+        element.innerHTML = content; // Update the content of the element
+    } else {
+        console.warn(`Element with ID "${targetElementId}" not found.`);
+    }
 }
